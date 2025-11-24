@@ -1,16 +1,36 @@
 <html>
-<body>
-<h1><font color='green'> Welcome to Cloudaseem Youtube Channel- yours Destination for Cloud AI & Devops Training <font></h1>
+  <body>
+    <h1 style="color: green;">
+      Welcome to My Website — Your Destination for Cloud, AI & DevOps Learning
+    </h1>
 
-<a href="https://www.youtube.com/@clouddevopswithaseem">Click Here To See our youtube Channel</a>
-  
-  <h2> Website : https://www.cloudaseem.com </h2>
-  
-  <h3> Linkdien : Follow us  : www.linkedin.com/in/mohammed-aseem-akram  </h3>
+    <h3>
+      LinkedIn:
+      <a href="https://www.linkedin.com/in/darshan-b-suttakoti-585172239?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app">
+        Darshan B Suttakoti
+      </a>
+    </h3>
 
-  <h4> Subscribe & Share the Channel </h4>
+    <h4>Stay Connected & Keep Learning</h4>
 
-  <h5> https://github.com/Aseemakram19  <h5> 
+    <h5>
+      Gmail: <a href="mailto:darshanbs189@gmail.com">darshanbs189@gmail.com</a>
+    </h5>
 
-</body>
+    <h5>
+      GitHub:
+      <a href="https://github.com/darshan-bs-2005">
+        https://github.com/darshan-bs-2005
+      </a>
+    </h5>
+
+    <h5>
+      Hashnode:
+      <a href="https://hashnode.com/">
+        https://hashnode.com/
+      </a>
+    </h5>
+
+  </body>
 </html>
+
