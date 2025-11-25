@@ -1,29 +1,79 @@
-pipeline {
+
+        pipeline {
     agent any
-    
-    tools{
-        maven "Maven3"
+
+    tools {
+        maven 'maven'
     }
-       
+
     stages {
-        stage('Git Checkout-github') {
+
+        stage('git clone') {
             steps {
-             git branch: 'main', url: 'https://github.com/Aseemakram19/maven-app.git'
+                git branch: 'main', url: 'https://github.com/darshan-bs-2005/java-maven-cicd.git'
             }
         }
-        stage('Build') {
+
+        stage('maven build var file') {
             steps {
-               sh 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
-        stage('Create a image') {
+
+        stage('docker image/container remove') {
             steps {
-               sh 'docker build -t aseem1 .'
+                sh '''
+                    docker stop java_container || true
+                    docker rm java_container || true
+                    docker rmi darshanbs2005/mavenapp:v1 || true
+                '''
             }
         }
-        stage('Docker Container app') {
+
+        stage('docker image push to docker hub') {
             steps {
-               sh 'docker run -d -p 9000:8080 -t aseem1'
+                script {
+                    withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
+                        sh '''
+                            docker build -t mavenapp .
+                            docker tag mavenapp darshanbs2005/mavenapp:v1
+                            docker push darshanbs2005/mavenapp:v1
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('deploy docker container') {
+            steps {
+                sh 'docker run -d -p 9000:8080 --name java_container darshanbs2005/mavenapp:v1'
+            }
+        }
+
+    } // END stages
+
+    post {
+        always {
+            script {
+                def buildStatus = currentBuild.currentResult
+                def buildUser = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]?.userId ?: 'Github User'
+
+                emailext(
+                    subject: "Pipeline ${buildStatus}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """
+                        <p>This is a Jenkins CICD pipeline status.</p>
+                        <p>Project: ${env.JOB_NAME}</p>
+                        <p>Build Number: ${env.BUILD_NUMBER}</p>
+                        <p>Build Status: ${buildStatus}</p>
+                        <p>Started by: ${buildUser}</p>
+                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    """,
+                    to: 'darshanbs189@gmail.com',
+                    from: 'darshanbs189@gmail.com',
+                    replyTo: 'darshanbs189@gmail.com',
+                    mimeType: 'text/html',
+                    attachmentsPattern: 'trivyfs.txt'
+                )
             }
         }
     }
