@@ -18,24 +18,29 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        
-        stage('docker image/container remove') {
+
+        stage('docker cleanup') {
             steps {
                 sh '''
-                    docker stop java_container || true
-                    docker rm java_container || true
+                    docker rm -f java_container || true
                     docker rmi darshanbs2005/mavenappfeature:latest || true
+                    docker rmi mavenappfeature || true
                 '''
             }
         }
-        
-        stage('docker image push to docker hub') {
+
+        stage('docker build & push') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
+                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh '''
+                            # Build local image
                             docker build -t mavenappfeature .
-                            docker tag mavenapp darshanbs2005/mavenappfeature:latest
+
+                            # Tag correctly for DockerHub
+                            docker tag mavenappfeature darshanbs2005/mavenappfeature:latest
+
+                            # Push to DockerHub
                             docker push darshanbs2005/mavenappfeature:latest
                         '''
                     }
@@ -45,7 +50,10 @@ pipeline {
 
         stage('deploy docker container') {
             steps {
-                sh 'docker run -d -p 9001:8080 --name java_container darshanbs2005/mavenappfeature:latest'
+                sh '''
+                    docker rm -f java_container || true
+                    docker run -d -p 9001:8080 --name java_container darshanbs2005/mavenappfeature:latest
+                '''
             }
         }
 
@@ -78,5 +86,4 @@ pipeline {
     }
 }
 
-       
       
