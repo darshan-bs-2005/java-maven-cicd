@@ -21,8 +21,8 @@ pipeline {
         stage('docker image/container remove') {
             steps {
                 sh '''
-                    docker stop java_container || true
-                    docker rm java_container || true
+                    docker stop java_containerfeature1 || true
+                    docker rm java_containerfeature1 || true
                     docker rmi darshanbs2005/mavenappfeature1:latest || true
                 '''
             }
@@ -46,7 +46,7 @@ pipeline {
 
         stage('deploy docker container') {
             steps {
-                sh 'docker run -d -p 9002:8080 --name java_container darshanbs2005/mavenappfeature1:latest'
+                sh 'docker run -d -p 9002:8080 --name java_containerfeature1 darshanbs2005/mavenappfeature1:latest'
             }
         }
 
