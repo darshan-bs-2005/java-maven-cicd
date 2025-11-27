@@ -46,7 +46,7 @@ pipeline {
 
         stage('deploy docker container') {
             steps {
-                sh 'docker run -d -p 9001:8080 --name java_containerfeature darshanbs2005/mavenappfeature:latest'
+                sh 'docker run -d -p 9003:8080 --name java_containerfeature darshanbs2005/mavenappfeature:latest'
             }
         }
 
