@@ -9,7 +9,7 @@ pipeline {
 
         stage('git clone') {
             steps {
-                git branch: 'feature', url: 'https://github.com/darshan-bs-2005/java-maven-cicd.git'
+                git branch: 'feature1', url: 'https://github.com/darshan-bs-2005/java-maven-cicd.git'
             }
         }
 
@@ -18,29 +18,25 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-
-        stage('docker cleanup') {
+        stage('docker image/container remove') {
             steps {
                 sh '''
-                    docker rm -f java_container || true
+                    docker stop java_containerfeature || true
+                    docker rm java_containerfeature || true
                     docker rmi darshanbs2005/mavenappfeature:latest || true
-                    docker rmi mavenappfeature || true
                 '''
             }
         }
+        
 
-        stage('docker build & push') {
+        
+        stage('docker image push to docker hub') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
+                    withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
                         sh '''
-                            # Build local image
-                            docker build -t mavenappfeature .
-
-                            # Tag correctly for DockerHub
-                            docker tag mavenappfeature darshanbs2005/mavenappfeature:latest
-
-                            # Push to DockerHub
+                            docker build -t mavenappfeature:latest .
+                            docker tag mavenapp darshanbs2005/mavenappfeature:latest
                             docker push darshanbs2005/mavenappfeature:latest
                         '''
                     }
@@ -50,10 +46,7 @@ pipeline {
 
         stage('deploy docker container') {
             steps {
-                sh '''
-                    docker rm -f java_container || true
-                    docker run -d -p 9001:8080 --name java_container darshanbs2005/mavenappfeature:latest
-                '''
+                sh 'docker run -d -p 9002:8080 --name java_containerfeature darshanbs2005/mavenappfeature:latest'
             }
         }
 
@@ -86,4 +79,5 @@ pipeline {
     }
 }
 
+       
       
