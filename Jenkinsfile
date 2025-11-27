@@ -23,7 +23,7 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
                         sh '''
-                            docker build -t mavenappfeature1:latest.
+                            docker build -t mavenappfeature1:latest .
                             docker tag mavenapp darshanbs2005/mavenappfeature1:latest
                             docker push darshanbs2005/mavenappfeature1:latest
                         '''
