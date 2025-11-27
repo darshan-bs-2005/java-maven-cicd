@@ -18,6 +18,18 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
+        stage('docker image/container remove') {
+            steps {
+                sh '''
+                    docker stop java_container || true
+                    docker rm java_container || true
+                    docker rmi darshanbs2005/mavenappfeature1:latest || true
+                '''
+            }
+        }
+        
+
+        
         stage('docker image push to docker hub') {
             steps {
                 script {
