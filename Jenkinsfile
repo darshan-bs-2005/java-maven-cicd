@@ -9,7 +9,7 @@ pipeline {
 
         stage('git clone') {
             steps {
-                git branch: 'main', url: 'https://github.com/darshan-bs-2005/java-maven-cicd.git'
+                git branch: 'feature1', url: 'https://github.com/darshan-bs-2005/java-maven-cicd.git'
             }
         }
 
@@ -18,25 +18,14 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-
-        stage('docker image/container remove') {
-            steps {
-                sh '''
-                    docker stop java_container || true
-                    docker rm java_container || true
-                    docker rmi darshanbs2005/mavenapp:v1 || true
-                '''
-            }
-        }
-
         stage('docker image push to docker hub') {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: "docker") {
                         sh '''
-                            docker build -t mavenapp .
-                            docker tag mavenapp darshanbs2005/mavenapp:v1
-                            docker push darshanbs2005/mavenapp:v1
+                            docker build -t mavenappfeature1:latest.
+                            docker tag mavenapp darshanbs2005/mavenappfeature1:latest
+                            docker push darshanbs2005/mavenappfeature1:latest
                         '''
                     }
                 }
@@ -45,7 +34,7 @@ pipeline {
 
         stage('deploy docker container') {
             steps {
-                sh 'docker run -d -p 9000:8080 --name java_container darshanbs2005/mavenapp:v1'
+                sh 'docker run -d -p 9002:8080 --name java_container darshanbs2005/mavenappfeature1:latest'
             }
         }
 
